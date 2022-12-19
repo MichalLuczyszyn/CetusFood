@@ -1,10 +1,11 @@
-﻿using System.Text.RegularExpressions;
+﻿
+using System.Text.RegularExpressions;
 using CetusFood.Restaurants.Domain.Common;
 using CetusFood.Restaurants.Domain.Entites.Restaurants.Exceptions;
 
 namespace CetusFood.Restaurants.Domain.Entites.Restaurants;
 
-public sealed partial class Restaurant : ArchivableEntity
+public sealed class Restaurant : ArchivableEntity
 {
     public Guid Id { get; }
     public string Name { get; private set; }
@@ -16,6 +17,7 @@ public sealed partial class Restaurant : ArchivableEntity
     private const int MaximumCharacters = 100;
     private const short MinimumHours = 0;
     private const short MaximumHours = 24;
+    private const string PatternTwo = "^\\+?\\d{1,4}?[-.\\s]?\\(?\\d{1,3}?\\)?[-.\\s]?\\d{1,4}[-.\\s]?\\d{1,4}[-.\\s]?\\d{1,9}$";
 
     public Restaurant(string name, string address, string phoneNumber, short openHour, short closeHour)
     {
@@ -54,9 +56,8 @@ public sealed partial class Restaurant : ArchivableEntity
     private static void GuardBeforeInvalidPhoneNumber(string phoneNumber)
     {
         if(string.IsNullOrEmpty(phoneNumber)) throw new PhoneNumberIsInvalidException();
-        if (!MyRegex().IsMatch(phoneNumber)) throw new PhoneNumberIsInvalidException();
+        var phoneIsValid = new Regex(PatternTwo).IsMatch(phoneNumber);
+        if (!phoneIsValid)
+            throw new PhoneNumberIsInvalidException();
     }
-
-    [GeneratedRegex("^\\d{8,10}$")]
-    private static partial Regex MyRegex();
 }
