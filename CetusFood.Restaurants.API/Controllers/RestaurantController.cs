@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using CetusFood.Restaurants.Application.Queries.GetRestaurant;
+using CetusFood.Restaurants.Application.Queries.GetRestaurants;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CetusFood.Restaurants.API.Controllers;
@@ -7,20 +10,29 @@ namespace CetusFood.Restaurants.API.Controllers;
 [Route("restaurants")]
 public class RestaurantController : ControllerBase
 {
-    [HttpGet]
-    // [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetFormResponse))]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult> GetRestaurants()
+    private readonly IMediator _mediator;
+
+    public RestaurantController(IMediator mediator)
     {
-        return Ok();
+        _mediator = mediator;
+    }
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetRestaurantsResponse))]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> GetRestaurants([FromQuery] GetRestaurantsQuery query)
+    {
+        var response = await _mediator.Send(query);
+        return Ok(response);
     }
 
     [HttpGet("{id:guid}")]
-    // [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetFormResponse))]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult> GetRestaurant(Guid id)
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetRestaurantResponse))]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> GetRestaurant([FromRoute] Guid id)
     {
-        return Ok();
+        var query = new GetRestaurantQuery(id);
+        var response = await _mediator.Send(query);
+        return Ok(response);
     }
 
     [HttpPost]
@@ -30,17 +42,18 @@ public class RestaurantController : ControllerBase
     {
         return Ok();
     }
+    
     [HttpPost("{id:guid}/delivery-price")]
     // [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CreateFormResponse))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult> SetRestaurantDeliveryPrice()
+    public async Task<ActionResult> SetRestaurantDeliveryPrice(Guid id)
     {
         return Ok();
     }
     
     [HttpPatch("{id:guid}/open-hours")]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult> UpdateRestaurantOpenHours()
+    public async Task<ActionResult> UpdateRestaurantOpenHours(Guid id)
     {
         return Ok();
     }
@@ -48,13 +61,13 @@ public class RestaurantController : ControllerBase
     [HttpDelete("{id:guid}")]
     // [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetFormCarOffersResponse))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult> ArchiveRestaurant()
+    public async Task<ActionResult> ArchiveRestaurant(Guid id)
     {
         return Ok();
     }
 
     [HttpPut("{id:guid}")]
-    public async Task<ActionResult> UpdateRestaurant()
+    public async Task<ActionResult> UpdateRestaurant(Guid id)
     {
         return Ok();
     }
