@@ -1,4 +1,5 @@
-﻿using CetusFood.Restaurants.Application.Queries.GetRestaurant;
+﻿using CetusFood.Restaurants.Application.Commands.SetRestaurantDeliveryPrice;
+using CetusFood.Restaurants.Application.Queries.GetRestaurant;
 using CetusFood.Restaurants.Application.Queries.GetRestaurants;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -46,9 +47,10 @@ public class RestaurantController : ControllerBase
     [HttpPost("{id:guid}/delivery-price")]
     // [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CreateFormResponse))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult> SetRestaurantDeliveryPrice(Guid id)
+    public async Task<ActionResult> SetRestaurantDeliveryPrice([FromRoute] Guid id, [FromQuery] SetRestaurantDeliveryPriceCommand command)
     {
-        return Ok();
+        await _mediator.Send(command);
+        return NoContent();
     }
     
     [HttpPatch("{id:guid}/open-hours")]
