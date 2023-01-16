@@ -1,4 +1,9 @@
-﻿using CetusFood.Restaurants.Application.Commands.SetRestaurantDeliveryPrice;
+﻿using CetusFood.Common.Abstractions.Dtos;
+using CetusFood.Restaurants.Application.Commands.Add;
+using CetusFood.Restaurants.Application.Commands.Archive;
+using CetusFood.Restaurants.Application.Commands.SetDeliveryPrice;
+using CetusFood.Restaurants.Application.Commands.SetOpenHours;
+using CetusFood.Restaurants.Application.Commands.Update;
 using CetusFood.Restaurants.Application.Queries.GetRestaurant;
 using CetusFood.Restaurants.Application.Queries.GetRestaurants;
 using MediatR;
@@ -17,6 +22,7 @@ public class RestaurantController : ControllerBase
     {
         _mediator = mediator;
     }
+
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetRestaurantsResponse))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -37,40 +43,47 @@ public class RestaurantController : ControllerBase
     }
 
     [HttpPost]
-    // [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CreateFormResponse))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ObjectCreatedDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult> AddRestaurant()
+    public async Task<ActionResult<ObjectCreatedDto>> AddRestaurant([FromBody] AddRestaurantCommand command)
     {
-        return Ok();
+        var response = await _mediator.Send(command);
+        return Ok(response);
     }
-    
+
     [HttpPost("{id:guid}/delivery-price")]
-    // [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CreateFormResponse))]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult> SetRestaurantDeliveryPrice([FromRoute] Guid id, [FromQuery] SetRestaurantDeliveryPriceCommand command)
+    public async Task<ActionResult> SetRestaurantDeliveryPrice([FromRoute] Guid id, [FromBody] SetRestaurantDeliveryPriceRequest request)
     {
+        await _mediator.Send(new SetRestaurantDeliveryPriceCommand(request.DeliveryCost, request.MinimalOrderValue, request.FreeOrderDeliveryThreshold, request.Date, id));
+        return NoContent();
+    }
+
+    [HttpPatch("{id:guid}/open-hours")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult> UpdateRestaurantOpenHours([FromRoute] Guid id, [FromBody] UpdateRestaurantOpenHoursRequest request)
+    {
+        var command = new UpdateRestaurantOpenHoursCommand(id, request.OpenHour, request.CloseHour);
         await _mediator.Send(command);
         return NoContent();
     }
-    
-    [HttpPatch("{id:guid}/open-hours")]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult> UpdateRestaurantOpenHours(Guid id)
-    {
-        return Ok();
-    }
-    
+
     [HttpDelete("{id:guid}")]
-    // [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetFormCarOffersResponse))]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult> ArchiveRestaurant(Guid id)
+    public async Task<ActionResult> ArchiveRestaurant([FromRoute] Guid id)
     {
-        return Ok();
+        await _mediator.Send(new ArchiveRestaurantCommand(id));
+        return NoContent();
     }
 
     [HttpPut("{id:guid}")]
-    public async Task<ActionResult> UpdateRestaurant(Guid id)
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<ActionResult> UpdateRestaurant([FromRoute] Guid id, [FromBody] UpdateRestaurantRequest request)
     {
-        return Ok();
+        await _mediator.Send(new UpdateRestaurantCommand(id, request.Name, request.Address, request.PhoneNumber));
+        return NoContent();
     }
 }

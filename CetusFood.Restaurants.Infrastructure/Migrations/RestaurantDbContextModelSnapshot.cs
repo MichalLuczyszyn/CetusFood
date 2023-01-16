@@ -49,7 +49,7 @@ namespace CetusFood.Restaurants.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MenuPositions");
+                    b.ToTable("MenuPositions", (string)null);
                 });
 
             modelBuilder.Entity("CetusFood.Restaurants.Domain.Entites.Restaurants.MenuPositionPrice", b =>
@@ -77,7 +77,7 @@ namespace CetusFood.Restaurants.Infrastructure.Migrations
 
                     b.HasIndex("MenuPositionId");
 
-                    b.ToTable("MenuPositionPrices");
+                    b.ToTable("MenuPositionPrices", (string)null);
                 });
 
             modelBuilder.Entity("CetusFood.Restaurants.Domain.Entites.Restaurants.Restaurant", b =>
@@ -112,7 +112,7 @@ namespace CetusFood.Restaurants.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Restaurants");
+                    b.ToTable("Restaurants", (string)null);
                 });
 
             modelBuilder.Entity("CetusFood.Restaurants.Domain.Entites.Restaurants.RestaurantDeliveryPrice", b =>
@@ -146,7 +146,7 @@ namespace CetusFood.Restaurants.Infrastructure.Migrations
 
                     b.HasIndex("RestaurantId");
 
-                    b.ToTable("RestaurantDeliveryPrices");
+                    b.ToTable("RestaurantDeliveryPrices", (string)null);
                 });
 
             modelBuilder.Entity("CetusFood.Restaurants.Domain.Entites.Restaurants.MenuPositionPrice", b =>

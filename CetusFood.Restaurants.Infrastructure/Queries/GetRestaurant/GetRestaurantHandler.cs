@@ -20,7 +20,7 @@ public class GetRestaurantHandler : IRequestHandler<GetRestaurantQuery, GetResta
     public async Task<GetRestaurantResponse> Handle(GetRestaurantQuery request, CancellationToken cancellationToken)
     {
         var restaurant = await _restaurants.Where(x => x.Id == request.Id)
-            .Select(x => new GetRestaurantResponse(x.Name, x.Address, x.PhoneNumber, x.OpenHour, x.CloseHour, x.RestaurantDeliveryPrices
+            .Select(x => new GetRestaurantResponse(x.Id, x.Name, x.Address, x.PhoneNumber, x.OpenHour, x.CloseHour, x.RestaurantDeliveryPrices
                 .Where(x => !x.IsArchived)
                 .Select(y => new GetRestaurantDeliveryPriceResponse(y.DeliveryCost, y.MinimalOrderValue, y.FreeOrderDeliveryThreshold)).FirstOrDefault()))
             .FirstOrDefaultAsync(cancellationToken: cancellationToken);

@@ -1,3 +1,4 @@
+using CetusFood.Common.Abstractions;
 using CetusFood.Restaurants.Application;
 using CetusFood.Restaurants.Infrastructure;
 using CetusFood.Restaurants.Infrastructure.EF.Extensions;
@@ -12,6 +13,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure();
+builder.Services.AddCommonExtensions();
 builder.Services.AddDatabaseConnection(builder.Configuration.GetValue<string>("ConnectionStrings:ConnectionString"));
 
 var app = builder.Build();

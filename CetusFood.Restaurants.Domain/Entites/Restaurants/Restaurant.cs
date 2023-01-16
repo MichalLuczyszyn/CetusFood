@@ -12,7 +12,7 @@ public sealed class Restaurant : ArchivableEntity
     public short OpenHour { get; private set; }
     public short CloseHour { get; private set; }
 
-    public ICollection<RestaurantDeliveryPrice> RestaurantDeliveryPrices { get; private set; }
+    public ICollection<RestaurantDeliveryPrice> RestaurantDeliveryPrices { get; private set; } = new List<RestaurantDeliveryPrice>();
 
 
     private const int MaximumCharacters = 100;
@@ -34,7 +34,7 @@ public sealed class Restaurant : ArchivableEntity
 
     public void AddRestaurantDeliveryPrice(RestaurantDeliveryPrice restaurantDeliveryPrice, DateTimeOffset currentDateTimeOffset)
     {
-        var timeSpan =  currentDateTimeOffset - restaurantDeliveryPrice.Date;
+        var timeSpan = currentDateTimeOffset - restaurantDeliveryPrice.Date;
         var daysPassed = timeSpan.Days;
 
         if (daysPassed > 30 || currentDateTimeOffset < restaurantDeliveryPrice.Date)

@@ -4,7 +4,7 @@ using CetusFood.Restaurants.Application.Repositories;
 using CetusFood.Restaurants.Domain.Entites.Restaurants;
 using MediatR;
 
-namespace CetusFood.Restaurants.Application.Commands.SetRestaurantDeliveryPrice;
+namespace CetusFood.Restaurants.Application.Commands.SetDeliveryPrice;
 
 public class SetRestaurantDeliveryPriceHandler : IRequestHandler<SetRestaurantDeliveryPriceCommand>
 {
@@ -22,11 +22,13 @@ public class SetRestaurantDeliveryPriceHandler : IRequestHandler<SetRestaurantDe
 
         if (restaurant is null) throw new RestaurantNotFoundException();
         
+        if (restaurant.IsArchived) throw new RestaurantIsAlreadyArchivedException();
+        
         var restaurantDeliveryPrice = new RestaurantDeliveryPrice(request.DeliveryCost, request.MinimalOrderValue, request.FreeOrderDeliveryThreshold, request.Date, request.Id);
         
         restaurant.AddRestaurantDeliveryPrice(restaurantDeliveryPrice, _clock.CurrentDateTimeOffset());
 
-        await _restaurantRepository.UpdateAsync(restaurant);
+        await _restaurantRepository.SaveChangesAsync();
         
         return Unit.Value;
     }

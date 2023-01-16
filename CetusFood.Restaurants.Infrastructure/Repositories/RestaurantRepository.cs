@@ -13,9 +13,15 @@ public class RestaurantRepository : IRestaurantRepository
     {
         _dbContext = dbContext;
     }
+
+    public async Task<bool> AnyAsync(string name)
+    {
+        return await _dbContext.Restaurants.AnyAsync(x => x.Name == name);
+    }
+
     public async Task<Restaurant> GetAsync(Guid id)
     {
-        return await _dbContext.Restaurants.AsNoTracking().Where(x => x.Id == id).FirstOrDefaultAsync();
+        return await _dbContext.Restaurants.Include(x => x.RestaurantDeliveryPrices).Where(x => x.Id == id).FirstOrDefaultAsync();
     }
 
     public async Task<Guid> AddAsync(Restaurant restaurant)
@@ -29,12 +35,6 @@ public class RestaurantRepository : IRestaurantRepository
     public async Task DeleteAsync(Restaurant restaurant)
     {
         _dbContext.Restaurants.Remove(restaurant);
-        await _dbContext.SaveChangesAsync();
-    }
-
-    public async Task UpdateAsync(Restaurant restaurant)
-    {
-        var result = _dbContext.Update(restaurant);
         await _dbContext.SaveChangesAsync();
     }
 
