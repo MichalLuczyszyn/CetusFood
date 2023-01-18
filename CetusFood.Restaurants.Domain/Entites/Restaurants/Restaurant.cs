@@ -4,7 +4,7 @@ using CetusFood.Restaurants.Domain.Entites.Restaurants.Exceptions;
 
 namespace CetusFood.Restaurants.Domain.Entites.Restaurants;
 
-public sealed class Restaurant : ArchivableEntity
+public sealed partial class Restaurant : ArchivableEntity
 {
     public string Name { get; private set; }
     public string Address { get; private set; }
@@ -12,7 +12,7 @@ public sealed class Restaurant : ArchivableEntity
     public short OpenHour { get; private set; }
     public short CloseHour { get; private set; }
 
-    public ICollection<RestaurantDeliveryPrice> RestaurantDeliveryPrices { get; private set; }
+    public ICollection<RestaurantDeliveryPrice> RestaurantDeliveryPrices { get; private set; } = new List<RestaurantDeliveryPrice>();
 
 
     private const int MaximumCharacters = 100;
@@ -34,7 +34,7 @@ public sealed class Restaurant : ArchivableEntity
 
     public void AddRestaurantDeliveryPrice(RestaurantDeliveryPrice restaurantDeliveryPrice, DateTimeOffset currentDateTimeOffset)
     {
-        var timeSpan =  currentDateTimeOffset - restaurantDeliveryPrice.Date;
+        var timeSpan = currentDateTimeOffset - restaurantDeliveryPrice.Date;
         var daysPassed = timeSpan.Days;
 
         if (daysPassed > 30 || currentDateTimeOffset < restaurantDeliveryPrice.Date)
@@ -88,8 +88,11 @@ public sealed class Restaurant : ArchivableEntity
     private static void GuardBeforeInvalidPhoneNumber(string phoneNumber)
     {
         if (string.IsNullOrEmpty(phoneNumber)) throw new PhoneNumberIsInvalidException();
-        var phoneIsValid = new Regex(PatternTwo).IsMatch(phoneNumber);
+        var phoneIsValid = MyRegex().IsMatch(phoneNumber);
         if (!phoneIsValid)
             throw new PhoneNumberIsInvalidException();
     }
+
+    [GeneratedRegex("^\\+?\\d{1,4}?[-.\\s]?\\(?\\d{1,3}?\\)?[-.\\s]?\\d{1,4}[-.\\s]?\\d{1,4}[-.\\s]?\\d{1,9}$")]
+    private static partial Regex MyRegex();
 }
