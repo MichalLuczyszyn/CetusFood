@@ -4,7 +4,7 @@ using CetusFood.Restaurants.Domain.Entites.Restaurants.Exceptions;
 
 namespace CetusFood.Restaurants.Domain.Entites.Restaurants;
 
-public sealed class Restaurant : ArchivableEntity
+public sealed partial class Restaurant : ArchivableEntity
 {
     public string Name { get; private set; }
     public string Address { get; private set; }
@@ -88,8 +88,11 @@ public sealed class Restaurant : ArchivableEntity
     private static void GuardBeforeInvalidPhoneNumber(string phoneNumber)
     {
         if (string.IsNullOrEmpty(phoneNumber)) throw new PhoneNumberIsInvalidException();
-        var phoneIsValid = new Regex(PatternTwo).IsMatch(phoneNumber);
+        var phoneIsValid = MyRegex().IsMatch(phoneNumber);
         if (!phoneIsValid)
             throw new PhoneNumberIsInvalidException();
     }
+
+    [GeneratedRegex("^\\+?\\d{1,4}?[-.\\s]?\\(?\\d{1,3}?\\)?[-.\\s]?\\d{1,4}[-.\\s]?\\d{1,4}[-.\\s]?\\d{1,9}$")]
+    private static partial Regex MyRegex();
 }

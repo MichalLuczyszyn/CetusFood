@@ -19,7 +19,7 @@ public class RestaurantRepository : IRestaurantRepository
         return await _dbContext.Restaurants.AnyAsync(x => x.Name == name);
     }
 
-    public async Task<Restaurant> GetAsync(Guid id)
+    public async Task<Restaurant?> GetAsync(Guid id)
     {
         return await _dbContext.Restaurants.Include(x => x.RestaurantDeliveryPrices).Where(x => x.Id == id).FirstOrDefaultAsync();
     }

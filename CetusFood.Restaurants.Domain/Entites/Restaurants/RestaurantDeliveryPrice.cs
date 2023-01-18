@@ -5,9 +5,12 @@ namespace CetusFood.Restaurants.Domain.Entites.Restaurants;
 
 public class RestaurantDeliveryPrice : ArchivableEntity
 {
+    private RestaurantDeliveryPrice()
+    {
+        
+    }
     public RestaurantDeliveryPrice(decimal deliveryCost, decimal minimalOrderValue, decimal? freeOrderDeliveryThreshold, DateTimeOffset date, Guid restaurantId)
     {
-        Id = Guid.NewGuid();
         GuardBeforeZeroValue(deliveryCost);
         DeliveryCost = deliveryCost;
         GuardBeforeZeroValue(minimalOrderValue);

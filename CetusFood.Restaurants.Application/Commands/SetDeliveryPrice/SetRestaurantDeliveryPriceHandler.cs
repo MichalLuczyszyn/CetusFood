@@ -24,7 +24,7 @@ public class SetRestaurantDeliveryPriceHandler : IRequestHandler<SetRestaurantDe
         
         if (restaurant.IsArchived) throw new RestaurantIsAlreadyArchivedException();
         
-        var restaurantDeliveryPrice = new RestaurantDeliveryPrice(request.DeliveryCost, request.MinimalOrderValue, request.FreeOrderDeliveryThreshold, request.Date, request.Id);
+        var restaurantDeliveryPrice = new RestaurantDeliveryPrice(request.DeliveryCost, request.MinimalOrderValue, request.FreeOrderDeliveryThreshold, request.Date, restaurant.Id);
         
         restaurant.AddRestaurantDeliveryPrice(restaurantDeliveryPrice, _clock.CurrentDateTimeOffset());
 
